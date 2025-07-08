@@ -11,13 +11,22 @@ def aggiungi_voce():
 
 @app.route("/visualizzaVoci/")
 def visualizza_voci():
-    tipo = request.args.get('tipo')
+    stato = request.args.get('stato')
     completato = None
-    if tipo == 'completato':
+    if stato == 'completato':
         completato = True
-    elif tipo == 'non completato':
+    elif stato == 'non completato':
         completato = False
     return list(filter(lambda e: e['completato']==completato or completato==None,elenco))
+
+@app.route("/cambiaStatoVoce/")
+def cambia_stato_voce():
+    voce = request.args.get('voce')
+    stato = request.args.get('stato')
+    for el in elenco:
+        if el['descrizione'] == voce:
+            el['completato'] = True if stato == 'completato' else False
+    return 'Modificato'
 
 if __name__ == '__main__':
     app.debug = True
