@@ -23,10 +23,12 @@ def visualizza_voci():
 def cambia_stato_voce():
     voce = request.args.get('voce')
     stato = request.args.get('stato')
+    trovato = False
     for el in elenco:
         if el['descrizione'] == voce:
             el['completato'] = True if stato == 'completato' else False
-    return 'Modificato'
+            trovato = True
+    return 'Modificato' if trovato else 'Non trovato'
 
 if __name__ == '__main__':
     app.debug = True
