@@ -6,7 +6,7 @@ elenco = []
 @app.route("/aggiungiVoce/")
 def aggiungi_voce():
     voce = request.args.get('voce')
-    elenco.append(voce)
+    elenco.append({'descrizione':voce, 'completato': False})
     return "Aggiunto"
 
 @app.route("/visualizzaVoci/")
