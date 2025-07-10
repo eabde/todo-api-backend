@@ -1,36 +1,63 @@
 from flask import Flask, request
 
 app = Flask(__name__)
-elenco = []
+liste :dict[str,set[str]] = {}
 
-@app.route("/aggiungiVoce/")
-def aggiungi_voce():
-    voce = request.args.get('voce')
-    elenco.append({'descrizione':voce, 'completato': False})
-    return "Aggiunto"
+@app.route("/aggiungiOggetto/")
+def aggiungi_oggetto():
+    '''
+    - aggiungere oggetto a lista
+        - nome utente
+        - oggetto
+    ''' 
+    nome = request.args.get('nome')
+    oggetto = request.args.get('oggetto')
+    try:
+        liste[nome].add(oggetto)
+    except:
+        liste[nome]={oggetto}
+    return "Oggetto aggiunto"
 
-@app.route("/visualizzaVoci/")
-def visualizza_voci():
-    stato = request.args.get('stato')
-    completato = None
-    if stato == 'completato':
-        completato = True
-    elif stato == 'non completato':
-        completato = False
-    return list(filter(lambda e: e['completato']==completato or completato==None,elenco))
+@app.route("/togliOggetto/")
+def togli_oggetto():
+    '''
+    - togliere oggetto a lista
+        - nome utente
+        - oggetto
+    '''
+    nome = request.args.get('nome')
+    oggetto = request.args.get('oggetto')
+    try:
+        liste[nome].remove(oggetto)
+    except:
+        return "Oggetto non trovato"
+    return "Oggetto rimosso"
 
-@app.route("/cambiaStatoVoce/")
-def cambia_stato_voce():
-    voce = request.args.get('voce')
-    stato = request.args.get('stato')
-    trovato = False
-    for el in elenco:
-        if el['descrizione'] == voce:
-            el['completato'] = True if stato == 'completato' else False
-            trovato = True
-    return 'Modificato' if trovato else 'Non trovato'
+@app.route("/vediLista/")
+def vedi_lista():
+    '''
+    - vedi lista della spesa
+        - nome utente
+    '''
+    nome = request.args.get('nome')
+    try:
+        return list(liste[nome])
+    except:
+        return "Lista non trovata"
+
+@app.route("/rimuoviLista/")
+def rimuovi_lista():
+    '''
+    - rimuovi lista della spesa
+        - nome utente
+    '''
+    nome = request.args.get('nome')
+    try:
+        del liste[nome]
+        return "Lista rimossa"
+    except:
+        return "Lista non trovata"
 
 if __name__ == '__main__':
     app.debug = True
     app.run()
-
