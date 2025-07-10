@@ -1,18 +1,17 @@
 TO-DO Api
 =============
 
-Queste sono delle API per un'app di TO-DO
+In questo progetto dobbiamo svolgere un esercizio diviso in tre livelli.
 
-## API
+livello 1:
+Crea il backend per un app di liste della spesa per più utenti 
+(NON ti preoccupare dell'autenticazione, basta il parametro nome)
 
-* `/aggiungiVoce/` Aggiunge una voce alla lista
-* `/visualizzaVoci/` Visualizza tutte le voci dell'elenco
-        parametri:
-            `'stato'` = `'completato'` : `'non completato'` 
-* `/cambiaStatoVoce/` Cambia lo stato di una voce (completato/non completato)
-        parametri:
-            `'voce'` = `la voce da modificare` 
-            `'stato'` = `'completato'` : `'non completato'` 
+livello 2:
+permetti ad ogni utente di avere più liste della spesa (identificate con un nome)
 
+livello 3:
+se quando l'utente ti chiede la lista della spesa a Milano ci sono meno di 30 gradi suggerisci di acquistare anche un ombrello 
+ (aggiungilo come "<suggerito> Ombrello")
 
 Gestito da Thomas
