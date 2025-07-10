@@ -1,4 +1,5 @@
 from flask import Flask, request
+import requests
 
 app = Flask(__name__)
 liste :dict[str,dict[str,set[str]]] = {}
@@ -48,6 +49,30 @@ def togli_oggetto():
         return "Oggetto non trovato"
     return "Oggetto rimosso"
 
+def temperatura_corrente_milano():
+    lat = 45.4654219
+    lon =  9.1859243
+    params = {'latitude': lat,
+            'longitude': lon,
+            'current':'temperature_2m'}
+
+    response = requests.get(url='https://api.open-meteo.com/v1/forecast', params=params)
+
+    if response.ok:
+        response_dictionary = response.json()
+        return response_dictionary['current']['temperature_2m']
+    else:
+        raise ConnectionError
+
+def suggerisci_ombrello():
+    try:
+        if temperatura_corrente_milano() < 30:
+            return True
+        else:
+            return False
+    except ConnectionError:
+        return False
+
 @app.route("/vediLista/")
 def vedi_lista():
     '''
@@ -58,6 +83,12 @@ def vedi_lista():
     nome = request.args.get('nome')
     lista = request.args.get('lista')
     try:
+        if suggerisci_ombrello():
+            lista_temp = liste[nome][lista].copy()
+            lista_temp.add("<suggerimento> Ombrello")
+            lista_temp = list(lista_temp)
+            lista_temp.sort()
+            return list(lista_temp)
         return list(liste[nome][lista])
     except:
         return "Lista non trovata"
