@@ -68,7 +68,7 @@ def vedi_lista():
     nome = request.args.get('nome')
     lista = request.args.get('lista')
     try:
-        ...
+        raise NotImplemented
     except:
         return "Lista non trovata"
 
@@ -81,16 +81,17 @@ def rimuovi_lista():
     '''
     nome_utente = request.args.get('nome')
     nome_lista = request.args.get('lista')
-    try:
-        cur = cnx.cursor()
-        cur.execute("DELETE FROM liste " \
-                    " WHERE     nome = %s " \
-                    "       AND id_utente IN (SELECT id " \
-                    "                           FROM utenti " \
-                    "                          WHERE nome = %s);"
-                   ,(nome_lista, nome_utente))
+
+    cur = cnx.cursor()
+    cur.execute("DELETE FROM liste " \
+                " WHERE     nome = %s " \
+                "       AND id_utente IN (SELECT id " \
+                "                           FROM utenti " \
+                "                          WHERE nome = %s);"
+                ,(nome_lista, nome_utente))
+    if cur.rowcount > 0:
         return "Lista rimossa"
-    except:
+    else:
         return "Lista non trovata"
 
 if __name__ == '__main__':
