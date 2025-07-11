@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request , jsonify
 import mysql.connector
 
 cnx = mysql.connector.connect(
@@ -53,16 +53,19 @@ def aggiungi_oggetto():
                 JOIN utenti u ON l.id_utente = u.id
                 WHERE l.nome = %s AND u.nome = %s
             """, (oggetto, lista, nome))
+                        
             if cur.rowcount == 0:
                 raise Exception("Lista o utente non trovati")
         except:
             # se fallisce significa che manca anche il nome
             # e allora creo tutto
             cur.execute("INSERT INTO utenti (nome) VALUES (%s)", (nome,))
+            id = cur.lastrowid
             cur.execute("""
-                INSERT INTO liste (nome, id_utente)
+                INSERT INTO liste (nome, %i)
                 SELECT %s, id FROM utenti WHERE nome = %s
-            """, (lista, nome))
+            """, (id ,lista, nome))
+            
             cur.execute("""
                 INSERT INTO oggetti (nome, id_lista)
                 SELECT %s, l.id
@@ -71,8 +74,7 @@ def aggiungi_oggetto():
                 WHERE l.nome = %s AND u.nome = %s
             """, (oggetto, lista, nome))
             
-            if cur.rowcount == 0:
-                raise Exception("Oggetto non inserito")
+            return "Oggetto non inserito"
     return "Oggetto aggiunto"
 
 @app.route("/togliOggetto/")
@@ -124,7 +126,7 @@ def vedi_lista():
         risultati = cur.fetchall()
         if not risultati:
             raise Exception("Lista vuota o non trovata")
-        return "<br>".join([row[0] for row in risultati])
+        return jsonify([row[0] for row in risultati])
     except:
         return "Lista non trovata"
 
